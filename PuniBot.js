@@ -65,6 +65,38 @@ module.exports = class PuniBot extends Client {
         })
     }
 
+    initSlashCommands(path) {
+        const files = Fs.readdirSync(path)
+        const filesLength = files.length
+        Fs.readdirSync(path).forEach((file, index) => {
+            try {
+                const filePath = path + '/' + file
+                if (file.endsWith('.js')) {
+                    try {
+                        const command = require(filePath)
+
+                        this.slashCommands.set(command.name, command)
+
+                        return this.logger.debug('[DEBUG] ::',
+                            ` (${++index}/${filesLength}) Loaded ${file} SlashCommand.`)
+                    }
+                    catch (err) {
+                        console.log(err)
+                        return this.logger.error('[FAIL] ::',
+                            `(${++index}) Fail when loading ${file} SlashCommand.`, false, err)
+                    }
+                }
+                if (Fs.lstatSync(filePath).isDirectory()) {
+                    console.log(`\n[${this.logger.getDate()}] Directory: ${file}`)
+                    this.initSlashCommands(filePath)
+                }
+            }
+            catch (err) {
+                console.error(err)
+            }
+        })
+    }
+
     initListeners(path) {
         const files = Fs.readdirSync(path)
         const filesLength = files.length
