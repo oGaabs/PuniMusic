@@ -12,16 +12,18 @@ module.exports = {
         if (!queue || !queue.playing) return message.reply('Não há nenhuma musica sendo tocada!')
         if (voiceChannel != queue.metadata.channel) return message.reply('Você precisa entrar no mesmo canal de voz!')
 
+        const isFilterEnabled = queue.getFiltersEnabled().includes('karaoke')
+
         // Setar um filtro de karaoke na música atual
         // e enviar uma mensagem de confirmação com ON/OFF
         await queue.setFilters({
-            'karaoke': !queue.getFiltersEnabled().includes('karaoke'),
-            normalizer2: !queue.getFiltersEnabled().includes('karaoke')
+            'karaoke': !isFilterEnabled,
+            normalizer2: !isFilterEnabled
         })
 
         const filterEmbed = new MessageEmbed()
             .setColor(client.colors['default'])
-            .setTitle(`🎵 | Karaoke Filter: ${queue.getFiltersEnabled().includes('karaoke') ? 'ON' : 'OFF'}`)
+            .setTitle(`🎵 | Karaoke Filter: ${!isFilterEnabled ? 'ON' : 'OFF'}`)
 
         setTimeout(() => {
             return message.channel.send({ embeds: [filterEmbed] })

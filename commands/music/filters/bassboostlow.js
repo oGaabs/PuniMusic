@@ -12,16 +12,20 @@ module.exports = {
         if (!queue || !queue.playing) return message.reply('Não há nenhuma musica sendo tocada!')
         if (voiceChannel != queue.metadata.channel) return message.reply('Você precisa entrar no mesmo canal de voz!')
 
-        // Setar um filtro de bassboost na música atual
+        const isFilterEnabled = queue.getFiltersEnabled().includes('bassboost_low')
+
+        // Troca a configuração atual do filtro
+        // Setando um filtro de Bassboost na música atual
         // e enviar uma mensagem de confirmação com ON/OFF
+
         await queue.setFilters({
-            'bassboostlow': !queue.getFiltersEnabled().includes('bassboostlow'),
-            normalizer2: !queue.getFiltersEnabled().includes('bassboostlow')
+            'bassboost_low': !isFilterEnabled,
+            normalizer2: !isFilterEnabled
         })
 
         const filterEmbed = new MessageEmbed()
             .setColor(client.colors['default'])
-            .setTitle(`🎵 | Bassboost: ${queue.getFiltersEnabled().includes('bassboostlow') ? 'ON' : 'OFF'}`)
+            .setTitle(`🎵 | Bassboost LOW: ${!isFilterEnabled ? 'ON' : 'OFF'}`)
 
         setTimeout(() => {
             return message.channel.send({ embeds: [filterEmbed] })

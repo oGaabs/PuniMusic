@@ -12,16 +12,19 @@ module.exports = {
         if (!queue || !queue.playing) return message.reply('Não há nenhuma musica sendo tocada!')
         if (voiceChannel != queue.metadata.channel) return message.reply('Você precisa entrar no mesmo canal de voz!')
 
-        // Setar um filtro de 8D na música atual
+        const isFilterEnabled = queue.getFiltersEnabled().includes('8D')
+
+        // Troca a configuração atual do filtro
+        // Setando um filtro de 8D na música atual
         // e enviar uma mensagem de confirmação com ON/OFF
         await queue.setFilters({
-            '8D': !queue.getFiltersEnabled().includes('8D'),
-            normalizer2: !queue.getFiltersEnabled().includes('8D')
+            '8D': !isFilterEnabled,
+            normalizer2: !isFilterEnabled
         })
 
         const filterEmbed = new MessageEmbed()
             .setColor(client.colors['default'])
-            .setTitle(`🎵 | 8D Filter: ${queue.getFiltersEnabled().includes('8D') ? 'ON' : 'OFF'}`)
+            .setTitle(`🎵 | 8D Filter: ${!isFilterEnabled ? 'ON' : 'OFF'}`)
 
         setTimeout(() => {
             return message.channel.send({ embeds: [filterEmbed] })

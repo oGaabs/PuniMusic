@@ -12,16 +12,20 @@ module.exports = {
         if (!queue || !queue.playing) return message.reply('Não há nenhuma musica sendo tocada!')
         if (voiceChannel != queue.metadata.channel) return message.reply('Você precisa entrar no mesmo canal de voz!')
 
-        // Setar um filtro de vaporwave na música atual
+        const isFilterEnabled = queue.getFiltersEnabled().includes('vaporwave')
+
+        // Troca a configuração atual do filtro
+        // Setando um filtro de Vaporwave na música atual
         // e enviar uma mensagem de confirmação com ON/OFF
+
         await queue.setFilters({
-            'vaporwave': !queue.getFiltersEnabled().includes('vaporwave'),
-            normalizer2: !queue.getFiltersEnabled().includes('vaporwave')
+            'vaporwave': !isFilterEnabled,
+            normalizer2: !isFilterEnabled
         })
 
         const filterEmbed = new MessageEmbed()
             .setColor(client.colors['default'])
-            .setTitle(`🎵 | Vaporwave Filter: ${queue.getFiltersEnabled().includes('vaporwave') ? 'ON' : 'OFF'}`)
+            .setTitle(`🎵 | Vaporwave Filter: ${!isFilterEnabled ? 'ON' : 'OFF'}`)
 
         setTimeout(() => {
             return message.channel.send({ embeds: [filterEmbed] })

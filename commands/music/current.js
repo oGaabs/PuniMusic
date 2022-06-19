@@ -17,9 +17,10 @@ module.exports = {
 
         const currentlyTrack = queue.current
         const songUrl = currentlyTrack.url.replace('https://www.youtube.com/watch?v=', 'https://youtu.be/')
-
+        const thumbUrl = currentlyTrack.thumbnail
         const songEmbed = new MessageEmbed()
             .setColor(client.colors['default'])
+            .setThumbnail(thumbUrl)
             .setTitle('Now playing')
             .setDescription(`**[${currentlyTrack.title}](${songUrl})**`)
             .addFields(

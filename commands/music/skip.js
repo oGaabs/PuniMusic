@@ -2,7 +2,7 @@ const { MessageEmbed } = require('discord.js')
 
 module.exports = {
     name: 'skip',
-    aliases: ['pular'],
+    aliases: ['pular', 'next','proxima'],
     description: 'Pular música',
     category: 'musica',
     execute: async (message, _args, client) => {
