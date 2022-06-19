@@ -4,7 +4,7 @@
 
 ---
 
-A Simple Discord bot made with Discord.js and Node.js.
+A Simple Discord music bot made with Discord.js and Node.js.
 
 The Discord.js is a powerful [Node.js][nodejs] module that allows you to easily interact with the
 [Discord API](https://discord.com/developers/docs/intro).
@@ -45,15 +45,6 @@ npm install discord.js
 ```
 
 ---
-#### Node-fetch:
-
-* **Node-fetch 2.6.x is required.**
-
-```sh-session
-npm install node-fetch@2.6.7
-```
-
----
 
 ## Features:
 
@@ -63,12 +54,6 @@ npm install node-fetch@2.6.7
 #### Commands
 
 * MusicBot( Play, Stop, Skip, Queue, Loop, ...)
-* Entertainment( Flip a coin, Search Gifs, and Ship Friends)
-* Information( Avatar, Help, Invite, Ping, Word)
-* Moderation( Clear, Spam)
-* Random Number Generator
-* FreeGames( Steam and Epic games ), in the future it will be on all servers
-
 
 #### Event listeners
 
@@ -76,11 +61,6 @@ npm install node-fetch@2.6.7
 * Command Handler
 * Event Handler
 * Error Handler
-
-**Will be on all servers in future:**
-
-* Welcome and Goodbye modules, AutoRole and Members count channel
-
 
 ---
 
