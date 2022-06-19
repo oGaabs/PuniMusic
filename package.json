@@ -28,11 +28,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PuniGC/PuniBot.git"
+    "url": "git+https://github.com/PuniGC/PuniMusic.git"
   },
   "bugs": {
-    "url": "https://github.com/PuniGC/PuniBot/issues",
+    "url": "https://github.com/PuniGC/PuniMusic/issues",
     "email": "gabriel04.ok@gmail.com"
   },
-  "homepage": "https://github.com/PuniGC/PuniBot#readme"
+  "homepage": "https://github.com/PuniGC/PuniMusic#readme"
 }
