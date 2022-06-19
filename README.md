@@ -1,6 +1,6 @@
 [<img alt="Discord.js image" src="https://discord.js.org/static/logo.svg" width="546"/>][discordjs]
 
-# PuniBot
+# PuniMusic
 
 ---
 
