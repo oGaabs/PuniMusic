@@ -14,6 +14,7 @@ client.once('ready', async () => {
     client.tag = client.user.tag
     client.initListeners('./listeners')
     client.initCommands('./commands')
+    client.initSlashCommands('./SlashCommands')
 
     const dmChannel = botOwner.dmChannel ?? await botOwner.createDM()
     const botOldMessages = await dmChannel.messages.fetch({ limit: 100 })

@@ -7,12 +7,11 @@ module.exports = {
         let categoryName = interaction.values[0]
         const messageToEdit = interaction.message
 
-        const command = client.commands.get('help')
+        const command = client.commands.get('helpmusic')
         if (!command) return
 
         if (categoryName == 'voltar')
             categoryName = false
-
 
         command.execute(interaction.message, [categoryName, messageToEdit], client)
     }
