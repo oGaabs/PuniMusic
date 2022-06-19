@@ -1,0 +1,21 @@
+# Visual Studio Code
+.vscode/
+
+# Packages node
+/node_modules
+/package-lock.json
+
+# Env
+/.env
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows shortcuts
+*.lnk
+
+# Folder config file
+[Dd]esktop.ini
+
+# Replit config
+/.replit
