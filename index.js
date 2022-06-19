@@ -36,7 +36,7 @@ client.once('ready', async () => {
         finalMessage.delete()
 
         // Print/Debug the bot startup status
-        client.logger.warn('',`\n[${client.logger.getDate()}] PuniBOT is ready!`)
+        client.logger.warn('',`\n[${client.logger.getDate()}] PuniMusic is ready!`)
         client.logger.alert('=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=','')
         client.logger.debug('Bot: ', client.tag)
         client.logger.debug('Status: ', 'Initialized')
