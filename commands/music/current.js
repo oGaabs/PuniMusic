@@ -1,11 +1,18 @@
+const Command = require('../../utils/base/Command.js')
+
 const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js')
 
-module.exports = {
-    name: 'current',
-    aliases: ['atual', 'playing', 'song', 'music', 'tocando', 'link', 'nowplaying'],
-    description: 'Música atual',
-    category: 'musica',
-    execute: async (message, _args, client) => {
+class Current extends Command {
+    constructor(client) {
+        super(client, {
+            name: 'current',
+            aliases: ['atual', 'playing', 'song', 'music', 'tocando', 'link', 'nowplaying'],
+            description: 'Música atual',
+            category: 'musica'
+        })
+    }
+
+    async execute (message, _args, client){
         const voiceChannel = message.member.voice.channel
         const queue = client.player?.getQueue(message.guild)
 
@@ -14,7 +21,6 @@ module.exports = {
 
         // Recupera a atual música que está tocando
         // e envia uma mensagem com o seu titulo, thumbnail, link e quem requisitou ela
-
         const currentlyTrack = queue.current
         const songUrl = currentlyTrack.url.replace('https://www.youtube.com/watch?v=', 'https://youtu.be/')
         const thumbUrl = currentlyTrack.thumbnail
@@ -51,3 +57,5 @@ module.exports = {
         message.channel.send({ ephemeral: true, embeds: [songEmbed], components: [row] })
     }
 }
+
+module.exports = Current

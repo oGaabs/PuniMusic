@@ -1,12 +1,19 @@
+const Command = require('../../utils/base/Command.js')
+
 const { MessageEmbed } = require('discord.js')
 const { QueueRepeatMode } = require('discord-player')
 
-module.exports = {
-    name: 'loop',
-    aliases: ['autoplay', 'semparar', 'dontstop'],
-    description: 'Loop na playlist',
-    category: 'musica',
-    execute: async (message, _args, client) => {
+class Loop extends Command {
+    constructor(client) {
+        super(client, {
+            name: 'loop',
+            aliases: ['autoplay', 'semparar', 'dontstop', 'repetir'],
+            description: 'Loop na playlist',
+            category: 'musica'
+        })
+    }
+
+    async execute (message, _args, client){
         const voiceChannel = message.member.voice.channel
         const queue = client.player.getQueue(message.guild)
 
@@ -31,3 +38,5 @@ module.exports = {
         message.channel.send({ embeds: [autoplayEmbed] })
     }
 }
+
+module.exports = Loop

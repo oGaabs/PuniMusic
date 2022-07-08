@@ -1,11 +1,18 @@
+const Command = require('../../utils/base/Command.js')
+
 const { MessageEmbed } = require('discord.js')
 
-module.exports = {
-    name: 'stop',
-    aliases: ['parar', 'limpar', 'desconectar', 'disconnect'],
-    description: 'Parar playlist',
-    category: 'musica',
-    execute: async (message, _args, client) => {
+class Stop extends Command {
+    constructor(client) {
+        super(client, {
+            name: 'stop',
+            aliases: ['parar', 'limpar', 'desconectar', 'disconnect'],
+            description: 'Parar playlist',
+            category: 'musica'
+        })
+    }
+
+    async execute (message, _args, client){
         const voiceChannel = message.member.voice.channel
         const queue = client.player.getQueue(message.guild)
 
@@ -23,3 +30,5 @@ module.exports = {
         await message.channel.send({ embeds: [playEmbed] })
     }
 }
+
+module.exports = Stop

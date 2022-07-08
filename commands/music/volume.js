@@ -1,12 +1,19 @@
+const Command = require('../../utils/base/Command.js')
+
 const { MessageEmbed } = require('discord.js')
 
-module.exports = {
-    name: 'volume',
-    aliases: ['som', 'vl'],
-    description: 'Controlar volume',
-    args: '(Número entre 0 e 100)',
-    category: 'musica',
-    execute: async (message, args, client) => {
+class Volume extends Command {
+    constructor(client) {
+        super(client, {
+            name: 'volume',
+            aliases: ['som','song', 'vol','vl'],
+            description: 'Controlar volume',
+            args: '(Número entre 0 e 100)',
+            category: 'musica'
+        })
+    }
+
+    async execute (message, args, client){
         const voiceChannel = message.member.voice.channel
         const queue = client.player.getQueue(message.guild)
 
@@ -30,3 +37,5 @@ module.exports = {
         await message.channel.send({ embeds: [volumeEmbed] })
     }
 }
+
+module.exports = Volume

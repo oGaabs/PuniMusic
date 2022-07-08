@@ -1,11 +1,18 @@
+const Command = require('../../../utils/base/Command.js')
+
 const { MessageEmbed } = require('discord.js')
 
-module.exports = {
-    name: 'nightcore',
-    aliases: ['nc', 'nightc', 'speedup'],
-    description: 'Nightcore filter',
-    category: 'musica',
-    execute: async (message, _args, client) => {
+class NightCore extends Command {
+    constructor(client) {
+        super(client, {
+            name: 'nightcore',
+            aliases: ['nc', 'nightc', 'speedup'],
+            description: 'Nightcore filter',
+            category: 'musica'
+        })
+    }
+
+    async execute (message, _args, client){
         const voiceChannel = message.member.voice.channel
         const queue = client.player.getQueue(message.guild)
 
@@ -32,3 +39,5 @@ module.exports = {
         }, queue.options.bufferingTimeout)
     }
 }
+
+module.exports = NightCore

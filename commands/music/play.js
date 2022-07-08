@@ -1,14 +1,76 @@
+const Command = require('../../utils/base/Command.js')
+
 const { MessageEmbed } = require('discord.js')
 const { Player } = require('discord-player')
-let player
 
-module.exports = {
-    name: 'play',
-    aliases: ['tocar', 'youtube', 'spotify', 'soundcloud'],
-    description: 'Tocar uma música',
-    args: 'Link do video',
-    category: 'musica',
-    execute: async (message, args, client) => {
+class Play extends Command {
+    constructor(client) {
+        super(client, {
+            name: 'play',
+            aliases: ['tocar', 'youtube', 'spotify'],
+            description: 'Tocar uma música',
+            args: 'Link do video',
+            category: 'musica'
+        })
+
+        // Configura o player de musica
+        client.player = new Player(client, {
+            leaveOnEnd: true,
+            leaveOnStop: true,
+            leaveOnEmpty: true,
+            leaveOnEmptyCooldown: 1000,
+            autoSelfDeaf: true,
+            initialVolume: 50
+        })
+
+        // Emitido quando uma nova musica começa a tocar
+        client.player.on('trackStart', (queue, track) => {
+            if (queue.repeatMode !== 0) return
+            this.onNewTrack(queue.metadata.textChannel, track)
+        })
+
+        // Emitido quando a lista de reprodução acaba
+        client.player.on('queueEnd', queue => {
+            if (queue.destroyed) return
+            this.onPlaylistEnd(queue.metadata.textChannel, queue)
+        })
+
+        // Error handlers
+        client.player.on('error', (queue, err) => {
+            console.log(`[${queue.guild.name}] Erro emitido: ${err}`)
+        })
+        client.player.on('connectionError', (queue, err) => {
+            console.log(`[${queue.guild.name}] Erro emitido da conexão: ${err}`)
+        })
+
+        // Emitido quando o estado de voz é atualizado
+        // Verificando se o bot foi desconectado (BotDisconnect)
+        client.on('voiceStateUpdate', (oldState, newState) => {
+            // Verifica se ocorreu uma desconexão
+            if(oldState.channelId && !newState.channelId){
+                // Se o bot tiver sido desconectado, limpa a lista de reprodução
+                if(newState.id === client.user.id){
+                    const queue = client.player.getQueue(oldState.guild.id)
+                    if (!queue) return
+
+                    const disconnectionEmbed = new MessageEmbed()
+                        .setColor(this.client.colors['default'])
+                        .setTitle('❌ | Fui desconectado do canal de voz, limpando a lista de reprodução!')
+
+                    queue.metadata.textChannel.send({ embeds: [disconnectionEmbed] })
+                    queue.destroy()
+                }
+            }
+        })
+
+        // O evento não está sendo emitido
+        /*client.player.on('botDisconnect', (queue) => {
+            queue.metadata.textChannel.send('❌ | Fui desconectado do canal de voz, limpando a lista de reprodução!')
+            queue.destroy()
+        })*/
+    }
+
+    async execute(message, args, client) {
         if (!args[0])
             return message.reply('Você precisa disponibilizar um link do youtube. Ex: !p play https://www.youtube.com/watch?v=dQw4w9WgXcQ')
 
@@ -18,40 +80,6 @@ module.exports = {
         const channelPermissions = voiceChannel.permissionsFor(message.client.user)
         if (!channelPermissions.has('CONNECT')) return message.reply('Estou sem permissão para conectar ao canal. (CONNECT)')
         if (!channelPermissions.has('SPEAK')) return message.reply('Estou sem permissão para falar no canal. (SPEAK)')
-
-        // Cria uma novo player, caso não exista, setando suas configurações e listeners
-        if (!client.player) {
-            player = new Player(client, {
-                leaveOnEnd: true,
-                leaveOnStop: true,
-                leaveOnEmpty: true,
-                leaveOnEmptyCooldown: 1000,
-                autoSelfDeaf: true,
-                initialVolume: 50
-            })
-            client.player = player
-
-            player.on('trackStart', (queue, track) => {
-                if (queue.repeatMode !== 0) return
-                onNewTrack(queue.metadata.textChannel, track)
-            })
-            player.on('queueEnd', queue => {
-                onPlaylistEnd(message.channel, queue)
-            })
-
-            player.on('error', (_queue, _err) => {
-                /*client.player = null
-                queue.destroy()
-                console.log(err)*/
-            })
-
-            player.on('connectionError', (_queue, _err) => {
-                //console.log(err)
-            })
-            player.on('botDisconnect', (queue) => {
-                queue.metadata.send('❌ | Fui desconectado do canal de voz, limpando a lista de reprodução!')
-            })
-        }
 
         const messageGuild = message.guild
         const song = args.join(' ')
@@ -65,23 +93,18 @@ module.exports = {
         if (!searchResult || !searchResult.tracks.length)
             return message.reply('Video não foi encontrado, certifique-se que é um link do Youtube/Spotify valido\nCaso o erro persista, a API que utilizamos pode estar fora do ar!')
 
-        const guildQueue = client.player.getQueue(messageGuild)
-        let queue
-
+        let guildQueue = client.player.getQueue(messageGuild)
         // Se não existir uma fila de reprodução, cria uma nova
         if (!guildQueue) {
-            queue = await player.createQueue(messageGuild, {
+            guildQueue = await client.player.createQueue(messageGuild, {
                 metadata: {
                     textChannel: message.channel,
                     channel: voiceChannel
                 }
             })
         }
-        else {
-            queue = guildQueue
-        }
 
-        playSong(searchResult, queue, voiceChannel)
+        playSong(searchResult, guildQueue, voiceChannel)
 
         async function playSong(searchResult, queue, voiceChannel) {
             // Verifica se uma conexão já foi estabelecida
@@ -123,40 +146,41 @@ module.exports = {
             // Toca a musica imediatamente, caso não esteja tocando
             if (!queue.playing) await queue.play()
         }
+    }
 
+    // Enviar uma nova mensagem com o link da música e suas especificações
+    async onNewTrack(channel, currentlySong) {
+        const shortUrl = currentlySong.url.replace('https://www.youtube.com/watch?v=', 'https://youtu.be/')
+        const songEmbed = new MessageEmbed()
+            .setColor(this.client.colors['default'])
+            .setTitle('Now playing')
+            .setThumbnail(currentlySong.thumbnail)
+            .setDescription(`**[${currentlySong.title}](${currentlySong.url})**`)
+            .addFields(
+                {
+                    name: '**Requisitada pelo(a)**',
+                    value: currentlySong.requestedBy.toString() || 'Não informado',
+                    inline: true
+                },
+                {
+                    name: 'Link',
+                    value: `**[${shortUrl}](${shortUrl})**`,
+                    inline: true
+                }
+            )
+        channel.send({ embeds: [songEmbed] })
+    }
 
-        // Enviar uma nova mensagem com o link da música e suas especificações
-        async function onNewTrack(channel, currentlySong) {
-            const shortUrl = currentlySong.url.replace('https://www.youtube.com/watch?v=', 'https://youtu.be/')
-            const songEmbed = new MessageEmbed()
-                .setColor(client.colors['default'])
-                .setTitle('Now playing')
-                .setThumbnail(currentlySong.thumbnail)
-                .setDescription(`**[${currentlySong.title}](${currentlySong.url})**`)
-                .addFields(
-                    {
-                        name: '**Requisitada pelo(a)**',
-                        value: currentlySong.requestedBy.toString() || 'Não informado',
-                        inline: true
-                    },
-                    {
-                        name: 'Link',
-                        value: `**[${shortUrl}](${shortUrl})**`,
-                        inline: true
-                    }
-                )
-            channel.send({ embeds: [songEmbed] })
-        }
+    // Enviar uma mensagem quando a playlist terminar
+    // e desconectar do canal de voz
+    onPlaylistEnd(channel, queue) {
+        const endEmbed = new MessageEmbed()
+            .setColor(this.client.colors['default'])
+            .setTitle('🎵 | Acabaram as músicas. Desconectando...')
+        channel.send({ embeds: [endEmbed] })
 
-        // Enviar uma mensagem quando a playlist terminar
-        // e desconectar do canal de voz
-        function onPlaylistEnd(channel, queue) {
-            const endEmbed = new MessageEmbed()
-                .setColor(client.colors['default'])
-                .setTitle('🎵 | Acabaram as músicas. Desconectando...')
-            channel.send({ embeds: [endEmbed] })
-
-            queue.destroy()
-        }
+        queue.destroy()
     }
 }
+
+module.exports = Play

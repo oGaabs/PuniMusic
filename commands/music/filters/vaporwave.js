@@ -1,11 +1,18 @@
+const Command = require('../../../utils/base/Command.js')
+
 const { MessageEmbed } = require('discord.js')
 
-module.exports = {
-    name: 'vaporwave',
-    aliases: ['vapor', 'wave'],
-    description: '8D filter',
-    category: 'musica',
-    execute: async (message, _args, client) => {
+class VaporWave extends Command {
+    constructor(client) {
+        super(client, {
+            name: 'vaporwave',
+            aliases: ['vapor', 'wave'],
+            description: 'VaporWave filter',
+            category: 'musica'
+        })
+    }
+
+    async execute (message, _args, client){
         const voiceChannel = message.member.voice.channel
         const queue = client.player.getQueue(message.guild)
 
@@ -32,3 +39,5 @@ module.exports = {
         }, queue.options.bufferingTimeout)
     }
 }
+
+module.exports = VaporWave

@@ -1,13 +1,19 @@
 const { MessageEmbed, MessageActionRow, MessageSelectMenu, Message } = require('discord.js')
+const Command = require('../../utils/base/Command.js')
 
 const formatString = (string) => `${string.charAt(0).toUpperCase()}${string.slice(1)}`
 
-module.exports = {
-    name: 'helpmusic',
-    aliases: ['ajudam', 'comandomusica', 'comandosm', 'botm', 'hm', 'ajudamusic'],
-    description: 'Mostra os comandos!',
-    category: 'informação',
-    execute: async (message, args, client) => {
+class HelpMusic extends Command {
+    constructor(client) {
+        super(client, {
+            name: 'helpmusic',
+            aliases: ['ajudam', 'comandomusica', 'comandosm', 'botm', 'hm', 'ajudamusic'],
+            description: 'Mostra os comandos!',
+            category: 'informação'
+        })
+    }
+
+    async execute (message, args, client){
         const messageToEdit = args[1]
 
         const helpEmbed = new MessageEmbed()
@@ -165,3 +171,5 @@ module.exports = {
 
     }
 }
+
+module.exports = HelpMusic

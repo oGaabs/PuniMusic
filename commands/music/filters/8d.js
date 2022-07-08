@@ -1,11 +1,18 @@
+const Command = require('../../../utils/base/Command.js')
+
 const { MessageEmbed } = require('discord.js')
 
-module.exports = {
-    name: '8d',
-    aliases: ['oito', 'oitod'],
-    description: '8D filter',
-    category: 'musica',
-    execute: async (message, _args, client) => {
+class OitoD extends Command {
+    constructor(client) {
+        super(client, {
+            name: '8d',
+            aliases: ['oito', 'oitod'],
+            description: '8D filter',
+            category: 'musica'
+        })
+    }
+
+    async execute (message, _args, client){
         const voiceChannel = message.member.voice.channel
         const queue = client.player.getQueue(message.guild)
 
@@ -31,3 +38,5 @@ module.exports = {
         }, queue.options.bufferingTimeout)
     }
 }
+
+module.exports = OitoD

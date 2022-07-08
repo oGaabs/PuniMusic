@@ -2,7 +2,7 @@ const { Client, Collection } = require('discord.js')
 const utils = require('./utils')
 const Fs = require('node:fs')
 
-module.exports = class PuniBot extends Client {
+class PuniBot extends Client {
     constructor(options = {}) {
         super(options)
 
@@ -33,12 +33,13 @@ module.exports = class PuniBot extends Client {
     initCommands(path) {
         const files = Fs.readdirSync(path)
         const filesLength = files.length
-        Fs.readdirSync(path).forEach((file, index) => {
+        files.forEach((file, index) => {
             try {
                 const filePath = path + '/' + file
                 if (file.endsWith('.js')) {
                     try {
-                        const command = require(filePath)
+                        const command = new (require(filePath))(this)
+
                         const commandName = file.replace(/.js/g, '').toLowerCase()
 
                         this.commands.set(commandName, command)
@@ -68,7 +69,7 @@ module.exports = class PuniBot extends Client {
     initSlashCommands(path) {
         const files = Fs.readdirSync(path)
         const filesLength = files.length
-        Fs.readdirSync(path).forEach((file, index) => {
+        files.forEach((file, index) => {
             try {
                 const filePath = path + '/' + file
                 if (file.endsWith('.js')) {
@@ -126,3 +127,5 @@ module.exports = class PuniBot extends Client {
         })
     }
 }
+
+module.exports = PuniBot
