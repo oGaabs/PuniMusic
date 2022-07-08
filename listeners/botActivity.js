@@ -17,15 +17,12 @@ module.exports = async function botActivity(client) {
         { name: '🎵 Mais Musicas legais para Você!', type: 'PLAYING' },
         { name: '🎵 Mais Musicas legais com Você!', type: 'LISTENING' }
     ]
-    const activitiesLength = activities.length
-
     const stats = ['online', 'dnd', 'idle']
-    const statsLength = stats.length
 
     setInterval(() => {
-        const activity = activities[Math.floor(Math.random() * activitiesLength)]
-        const status = stats[Math.floor(Math.random() * statsLength)]
+        const randomActivity = activities[Math.floor(Math.random() * activities.length)]
+        const randomStatus = stats[Math.floor(Math.random() * stats.length)]
 
-        puniBot.setPresence({ activities: [activity], status })
+        puniBot.setPresence({ activities: [randomActivity], status: randomStatus })
     }, 20000)
 }
