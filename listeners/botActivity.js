@@ -4,7 +4,7 @@ module.exports = async function botActivity(client) {
             prefix: botPrefix } = client
 
     const activities = [
-        { name: '🎥 Cineminha!', type: 'STREAMING', url: 'https://www.netflix.com/watch/81073022?trackId=14170033&tctx=1%2C0%2Cbb356764-ae2a-42ea-afac-69e403b2ac9e-42496442%2C09551ab6-8494-4e9b-bdca-5f41cf065a47_24951814X9XX1641901381014%2C09551ab6-8494-4e9b-bdca-5f41cf065a47_ROOT%2C%2C%2C' },
+        { name: '🎥 Cineminha!', type: 'STREAMING', url: 'https://www.netflix.com/title/80057281' },
         { name: '🍮 Como fazer um pudim?', type: 'PLAYING' },
         { name: `${botTag} ✔️`, type: 'LISTENING' },
         { name: `${botPrefix} helpmusic`, type: 'LISTENING' },
