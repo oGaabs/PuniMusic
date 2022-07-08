@@ -8,6 +8,15 @@ module.exports = function errorHandler(client) {
     }, 20000)
 
     process.on('unhandledRejection', error => {
+        const logChannel = client.channels.cache.get('937080796144091217')
+        const errorEmbed = new MessageEmbed()
+            .setTitle('🛑 | **Erro inesperado:**', true)
+            .addField('**Unhandled Rejection**', 'Um erro inesperado aconteceu.\n\n**Stacktrace:**\n```' + error.stack + '```')
+            .setTimestamp()
+            .setFooter(client.getFooter(logChannel.guild))
+
+        logChannel.send({ embeds: [errorEmbed] })
+
         client.logger.warn('[Anti-Crash] ::', 'Unhandled Rejection', true)
         client.logger.error('[Error] => ', error.stack + '\n')
 
@@ -18,15 +27,6 @@ module.exports = function errorHandler(client) {
             client.destroy()
             return process.exit(1)
         }
-
-        const logChannel = client.channels.cache.get('937080796144091217')
-        const errorEmbed = new MessageEmbed()
-            .setTitle('🛑 | **Erro inesperado:**', true)
-            .addField('**Unhandled Rejection**', 'Um erro inesperado aconteceu.\n\n**Stacktrace:**\n```' + error.stack + '```')
-            .setTimestamp()
-            .setFooter(client.getFooter(logChannel.guild))
-
-        logChannel.send({ embeds: [errorEmbed] })
 
         client.logger.debug('[DEBUG] ::', 'Logando novamente...', true)
         client.restartBot()
