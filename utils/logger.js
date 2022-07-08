@@ -31,5 +31,10 @@ module.exports = {
             title = '[' + this.getDate() + ']\n' + title
 
         console.log(title, content)
+    },
+    send: function (client, options) {
+        const logChannel = client.channels.cache.get('937080796144091217')
+
+        logChannel.send(options)
     }
 }
