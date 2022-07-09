@@ -8,7 +8,7 @@ module.exports = async function botActivity(client) {
         { name: '🍮 Como fazer um pudim?', type: 'PLAYING' },
         { name: `${botTag} ✔️`, type: 'LISTENING' },
         { name: `${botPrefix} helpmusic`, type: 'LISTENING' },
-        { name: 'Sem minha crush 💔', type: 'PLAYING' },
+        { name: 'Musica sem a crush 💔', type: 'LISTENING' },
         { name: '🏆 Anda perdido ? me mencione!', type: 'LISTENING' },
         { name: '🔑 Entre em contato para reportar qualquer bug.', type: 'PLAYING' },
         { name: '🍮 Pudim na lua?', type: 'CUSTOM' },
