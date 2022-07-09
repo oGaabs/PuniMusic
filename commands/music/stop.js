@@ -16,18 +16,18 @@ class Stop extends Command {
         const voiceChannel = message.member.voice.channel
         const queue = client.player.getQueue(message.guild)
 
-        if (!queue || !queue.playing) return message.reply('Não há nenhuma musica sendo tocada!')
-        if (voiceChannel != queue.metadata.channel) return message.reply('Você precisa entrar no mesmo canal de voz!')
+        if (!queue || !queue.playing) return message.channel.send('Não há nenhuma musica sendo tocada!')
+        if (voiceChannel != queue.metadata.channel) return message.channel.send('Você precisa entrar no mesmo canal de voz!')
 
         // Para a reprodução atual, desconectando o bot do canal de voz
         // e envia uma mensagem de confirmação
-        queue.destroy()
+        await queue.destroy()
 
-        const playEmbed = new MessageEmbed()
+        const stopEmbed = new MessageEmbed()
             .setColor(client.colors['default'])
             .setTitle('🛑 | Playlist parada!')
 
-        await message.channel.send({ embeds: [playEmbed] })
+        await message.channel.send({ embeds: [stopEmbed] })
     }
 }
 

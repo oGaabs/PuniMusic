@@ -16,8 +16,8 @@ class Queue extends Command {
         const voiceChannel = message.member.voice.channel
         const queue = client.player?.getQueue(message.guild)
 
-        if (!queue || !queue.playing) return message.reply('Não há nenhuma musica sendo tocada!')
-        if (voiceChannel != queue.metadata.channel) return message.reply('Você precisa entrar no mesmo canal de voz!')
+        if (!queue || !queue.playing) return message.channel.send('Não há nenhuma musica sendo tocada!')
+        if (voiceChannel != queue.metadata.channel) return message.channel.send('Você precisa entrar no mesmo canal de voz!')
 
         // Recupera a atual lista de reprodução do servidor e a formata para ser enviada
         // mostrando um embed com as músicas e seus respectivos links
@@ -34,7 +34,7 @@ class Queue extends Command {
         const listEmbed = new MessageEmbed()
             .setColor(client.colors['default'])
             .setTitle('Lista de Reprodução')
-            .setThumbnail(currentlySong.thumbnail)
+            .setThumbnail(currentlySong.source != 'spotify' ? currentlySong.thumbnail : 'https://cdn-icons-png.flaticon.com/512/725/725281.png?w=360')
             .setDescription(`Now playing: **[${shortifyTitle(currentlySong.title)}](${currentlySongUrl})**\n\n` +
                 playlist.join(' '))
 

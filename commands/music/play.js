@@ -154,7 +154,7 @@ class Play extends Command {
         const songEmbed = new MessageEmbed()
             .setColor(this.client.colors['default'])
             .setTitle('Now playing')
-            .setThumbnail(currentlySong.thumbnail)
+            .setThumbnail(currentlySong.source != 'spotify' ? currentlySong.thumbnail : 'https://cdn-icons-png.flaticon.com/512/725/725281.png?w=360')
             .setDescription(`**[${currentlySong.title}](${currentlySong.url})**`)
             .addFields(
                 {

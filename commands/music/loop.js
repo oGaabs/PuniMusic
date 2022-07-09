@@ -17,8 +17,8 @@ class Loop extends Command {
         const voiceChannel = message.member.voice.channel
         const queue = client.player.getQueue(message.guild)
 
-        if (!queue || !queue.playing) return message.reply('Não há nenhuma musica sendo tocada!')
-        if (voiceChannel != queue.metadata.channel) return message.reply('Você precisa entrar no mesmo canal de voz!')
+        if (!queue || !queue.playing) return message.channel.send('Não há nenhuma musica sendo tocada!')
+        if (voiceChannel != queue.metadata.channel) return message.channel.send('Você precisa entrar no mesmo canal de voz!')
 
         // Alterna a opção de repetir a playlist
         let autoPlay
