@@ -21,13 +21,21 @@ module.exports = async function onMessage(client) {
     })
 
     client.on('interactionCreate', async (interaction) => {
+        await interaction.deferUpdate({ ephemeral: false })
         // SelectMenu Handling
         if (interaction.isSelectMenu()) {
-            await interaction.deferUpdate({ ephemeral: false })
+
             const selectMenu = client.slashCommands.get(interaction.customId)
             if (!selectMenu) return
 
             return selectMenu.execute(interaction, client)
+        }
+        // Button Handling
+        if(interaction.isButton()){
+            const button = client.commands.find(cmd => cmd.name === interaction.customId || (cmd.aliases && cmd.aliases.includes(interaction.customId)))
+            if (!button) return
+
+            return button.execute(interaction, [], client, true)
         }
     })
 }
