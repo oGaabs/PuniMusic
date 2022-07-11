@@ -30,10 +30,10 @@ class Back extends Command {
             backEmbed.setTitle(':x: | Não há uma musica anterior')
         }
 
-        message.channel.send({ embeds: [backEmbed] })
-
         if (isButton)
-            client.commands.get('current').execute(message, _args, client, true)
+            return client.getCommand('painel').execute(message, _args, client, true)
+
+        message.channel.send({ embeds: [backEmbed] })
     }
 }
 

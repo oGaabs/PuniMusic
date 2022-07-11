@@ -29,7 +29,7 @@ class Skip extends Command {
             .setTitle(`✅ | Musica skipada: ${currentTrack}`)
 
         if (isButton)
-            return client.commands.get('current').execute(message, _args, client, true)
+            return client.getCommand('painel').execute(message, _args, client, true)
 
         message.channel.send({ embeds: [playEmbed] })
     }

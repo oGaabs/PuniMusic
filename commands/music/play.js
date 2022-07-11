@@ -1,17 +1,19 @@
 const Command = require('../../utils/base/Command.js')
 
 const { MessageEmbed } = require('discord.js')
-const { Player } = require('discord-player')
+const { Player, QueryType } = require('discord-player')
 
 class Play extends Command {
     constructor(client) {
         super(client, {
             name: 'play',
             aliases: ['tocar', 'youtube', 'spotify'],
-            description: 'Tocar uma música',
-            args: 'Link do video',
+            description: 'Toca música do youtube ou spotify',
+            args: '<Song Name | YouTube URL | Spotify URL>',
             category: 'musica'
         })
+
+        this.painelCommand = client.getCommand('painel')
 
         // Configura o player de musica
         client.player = new Player(client, {
@@ -24,9 +26,9 @@ class Play extends Command {
         })
 
         // Emitido quando uma nova musica começa a tocar
-        client.player.on('trackStart', (queue, track) => {
-            if (queue.repeatMode !== 0) return
-            this.onNewTrack(queue.metadata.textChannel, track)
+        client.player.on('trackStart', (queue, _track) => {
+            //if (queue.repeatMode !== 0) return
+            this.onNewTrack(queue)
         })
 
         // Emitido quando a lista de reprodução acaba
@@ -82,29 +84,26 @@ class Play extends Command {
         if (!channelPermissions.has('SPEAK')) return message.reply('Estou sem permissão para falar no canal. (SPEAK)')
 
         const messageGuild = message.guild
-        const song = args.join(' ')
+        const songString = args.join(' ')
 
         // Procura por uma música, usando um titulo ou um link
         // Funciona com playlist (youtube ou spotify)
-        const searchResult = await client.player.search(song, {
-            requestedBy: message.author
-        }).then(s => s).catch(() => { })
+        const searchResult = await client.player.search(songString, {
+            requestedBy: message.author,
+            searchEngine: QueryType.AUTO
+        }).then(s => s).catch(() => {})
 
         if (!searchResult || !searchResult.tracks.length)
             return message.reply('Video não foi encontrado, certifique-se que é um link do Youtube/Spotify valido\nCaso o erro persista, a API que utilizamos pode estar fora do ar!')
 
-        let guildQueue = client.player.getQueue(messageGuild)
-        // Se não existir uma fila de reprodução, cria uma nova
-        if (!guildQueue) {
-            guildQueue = await client.player.createQueue(messageGuild, {
-                metadata: {
-                    textChannel: message.channel,
-                    channel: voiceChannel
-                }
-            })
-        }
+        const guildQueue = client.player.createQueue(messageGuild, {
+            metadata: {
+                textChannel: message.channel,
+                channel: voiceChannel
+            }
+        })
 
-        playSong(searchResult, guildQueue, voiceChannel)
+        await playSong(searchResult, guildQueue, voiceChannel)
 
         async function playSong(searchResult, queue, voiceChannel) {
             // Verifica se uma conexão já foi estabelecida
@@ -144,31 +143,18 @@ class Play extends Command {
             }
 
             // Toca a musica imediatamente, caso não esteja tocando
-            if (!queue.playing) await queue.play()
+            if (!guildQueue.playing){
+                await guildQueue.play()
+            }
         }
     }
 
     // Enviar uma nova mensagem com o link da música e suas especificações
-    async onNewTrack(channel, currentlySong) {
-        const shortUrl = currentlySong.url.replace('https://www.youtube.com/watch?v=', 'https://youtu.be/')
-        const songEmbed = new MessageEmbed()
-            .setColor(this.client.colors['default'])
-            .setTitle('Now playing')
-            .setThumbnail(currentlySong.source != 'spotify' ? currentlySong.thumbnail : 'https://cdn-icons-png.flaticon.com/512/725/725281.png?w=360')
-            .setDescription(`**[${currentlySong.title}](${currentlySong.url})**`)
-            .addFields(
-                {
-                    name: '**Requisitada pelo(a)**',
-                    value: currentlySong.requestedBy.toString() || 'Não informado',
-                    inline: true
-                },
-                {
-                    name: 'Link',
-                    value: `**[${shortUrl}](${shortUrl})**`,
-                    inline: true
-                }
-            )
-        channel.send({ embeds: [songEmbed] })
+    async onNewTrack(queue) {
+        if (!queue.metadata.painel)
+            return queue.metadata.painel = await queue.metadata.textChannel.send(this.painelCommand.getPainel(queue, this.client))
+
+        this.painelCommand.execute(queue.metadata.painel, [], this.client, true)
     }
 
     // Enviar uma mensagem quando a playlist terminar
