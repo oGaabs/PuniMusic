@@ -30,6 +30,10 @@ class PuniBot extends Client {
         return guild ? { text: guild.name, iconURL: guild.iconURL({ dynamic: true, size: 1024 }) } : null
     }
 
+    getCommand(commandName) {
+        return this.commands.find(cmd => cmd.name === commandName || (cmd.aliases && cmd.aliases.includes(commandName))) ?? null
+    }
+
     initCommands(path) {
         const files = Fs.readdirSync(path)
         const filesLength = files.length
