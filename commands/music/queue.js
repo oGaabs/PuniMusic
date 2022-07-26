@@ -1,6 +1,11 @@
 const Command = require('../../utils/base/Command.js')
 
-const { MessageEmbed } = require('discord.js')
+const { MessageEmbed} = require('discord.js')
+const { hyperlink } = require('../../utils/formatersDiscord.js')
+const splitMessage = (str) => [
+    str.substring(0, 2000),
+    str.substring(2000, str.length),
+]
 
 class Queue extends Command {
     constructor(client) {
@@ -21,22 +26,24 @@ class Queue extends Command {
 
         // Recupera a atual lista de reprodução do servidor e a formata para ser enviada
         // mostrando um embed com as músicas e seus respectivos links
-        const songs = queue.tracks
+        let playlist = queue.tracks.slice(0, 10)
+        playlist = playlist.map(song => {
+            const title  = shortifyTitle(song.title)
+            const url = shortifyUrl(song.url)
+
+            return `**${title} ${hyperlink('Link', url)}**\n`
+        })
+        playlist.push(`\n${hyperlink('Ver todas', `${message.guild.client.config.prefix}queue`)}`)
+
         const currentlySong = queue.current
         const currentlySongUrl = shortifyUrl(currentlySong.url)
-
-        let playlist = []
-        for (let { title, url } of songs) {
-            url = shortifyUrl(url)
-            playlist.push(`**${shortifyTitle(title)} [Link](${url})**\n`)
-        }
 
         const listEmbed = new MessageEmbed()
             .setColor(client.colors['default'])
             .setTitle('Lista de Reprodução')
             .setThumbnail(currentlySong.source != 'spotify' ? currentlySong.thumbnail : 'https://cdn-icons-png.flaticon.com/512/725/725281.png?w=360')
-            .setDescription(`Now playing: **[${shortifyTitle(currentlySong.title)}](${currentlySongUrl})**\n\n` +
-                playlist.join(' '))
+            .setDescription(splitMessage(`Now playing: **[${shortifyTitle(currentlySong.title)}](${currentlySongUrl})**\n\n` +
+                    playlist.join(' '))[0])
 
         message.channel.send({ embeds: [listEmbed] })
 
