@@ -4,7 +4,7 @@ module.exports = async function botActivity(client) {
             prefix: botPrefix } = client
 
     const activities = [
-        { name: '🎥 Cineminha!', type: 'STREAMING', url: 'https://www.netflix.com/title/80057281' },
+        { name: '🎵 Musiquinha!', type: 'LISTENING'},
         { name: '🍮 Como fazer um pudim?', type: 'PLAYING' },
         { name: `${botTag} ✔️`, type: 'LISTENING' },
         { name: `${botPrefix} helpmusic`, type: 'LISTENING' },
