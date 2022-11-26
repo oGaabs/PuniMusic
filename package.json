@@ -20,7 +20,8 @@
     "ffmpeg-static": "^5.0.0",
     "libsodium-wrappers": "^0.7.10",
     "moment": "^2.29.3",
-    "opusscript": "^0.0.8"
+    "opusscript": "^0.0.8",
+    "ytdl-core": "^4.11.2"
   },
   "devDependencies": {
     "eslint": "^8.16.0",
