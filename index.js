@@ -1,51 +1,68 @@
 require('dotenv').config()
 
-const startHost = require('./host')
-startHost()
+const { GatewayIntentBits, Events } = require('discord.js')
+const { version } = require('./package.json')
 
-const { Intents } = require('discord.js')
-const PuniBot = require('./PuniBot')
-const client = new PuniBot({ intents: new Intents(32767) })
+const startHost = require('./src/config/server')
+const PuniBot = require('./src/PuniBot')
 
-client.once('ready', async () => {
+
+const client = new PuniBot({
+    intents: [
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildPresences,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.MessageContent
+    ],
+    partials: ['CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION', 'USER'],
+})
+
+
+client.once(Events.ClientReady, async () => {
     const botOwner = await client.application.fetch().then(app => client.users.fetch(app.owner))
 
     client.botOwner = botOwner
     client.tag = client.user.tag
-    client.initListeners('./listeners')
-    client.initCommands('./commands')
-    client.initSlashCommands('./SlashCommands')
+    client.initListeners('./src/events')
+    client.initCommands('./src/commands')
+    client.initSlashCommands('./src/commands/slashCommands')
 
     const dmChannel = botOwner.dmChannel ?? await botOwner.createDM()
     const botOldMessages = await dmChannel.messages.fetch({ limit: 100 })
 
-    // Delete old messages of bot from owner DM
+    // Exclui mensagens antigas do bot enviadas ao dono por DM
     botOldMessages.forEach(message => {
-        if (message.author.id === client.user.id)
+        const isMessageFromBot = message.author.id === client.user.id
+        if (isMessageFromBot)
             message.delete()
     })
 
-    // Calculate the bot ping and send a message to owner via DM
+    // Calcula o ping do bot e manda a mensagem para o dono via DM
     botOwner.send('Estou online 🤨👍').then(async startMessage => {
+        // Calculate ping
         const finalMessage = await botOwner.send('**Calculando...**')
         const botPing = finalMessage.createdTimestamp - startMessage.createdTimestamp
         const apiPing = Math.round(client.ws.ping)
-
-        // Advise owner via DM about the bot's ping
-        botOwner.send(`Bot Latency: ${botPing} ms, API Latency: ${apiPing} ms`)
         finalMessage.delete()
 
-        // Print/Debug the bot startup status
-        client.logger.warn('',`\n[${client.logger.getDate()}] PuniMusic is ready!`)
-        client.logger.alert('=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=','')
+        // Manda o calculo de ping para o dono via DM
+        botOwner.send(`Bot Latency: ${botPing} ms, API Latency: ${apiPing} ms`)
+
+        // Printa/Debuga o status do bot
+        client.logger.alert('\n=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=', '')
+        client.logger.warn('', `[${client.logger.getDate()}] PuniBOT v${version} is ready!`)
         client.logger.debug('Bot: ', client.tag)
         client.logger.debug('Status: ', 'Initialized')
         client.logger.debug('Memory: ', `${Math.round(process.memoryUsage().rss / 1024 / 1024 * 100) / 100}/1024 MB`)
-        client.logger.debug('Bot Latency: ',`${botPing} ms`)
-        client.logger.debug('API Latency: ',`${apiPing} ms`)
-        client.logger.alert('=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=','\n')
+        client.logger.debug('Bot Latency: ', `${botPing} ms`)
+        client.logger.debug('API Latency: ', `${apiPing} ms`)
+        client.logger.alert('=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=', '\n')
     })
 })
 
-// Login to Discord with your app's token
-client.loginBot(process.env.TOKEN)
+// Loga na Discord API com o token do seu bot
+client.loginBot(process.env.CLIENT_TOKEN)
+startHost()
