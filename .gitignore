@@ -3,7 +3,6 @@
 
 # Packages node
 /node_modules
-/package-lock.json
 
 # Env
 /.env
