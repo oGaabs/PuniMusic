@@ -1,6 +1,6 @@
 
 <h2 align="center">
-    <img alt="PuniMusic Banner" title="" src="https://user-images.githubusercontent.com/53992405/216742487-17014560-db87-4c5c-ba7f-1eb639f489a3.png" height="150px" width="300px" />
+    <img alt="PuniMusic Banner" title="" src="https://user-images.githubusercontent.com/53992405/216742487-17014560-db87-4c5c-ba7f-1eb639f489a3.png" height="150px" width="350px" />
 </h2>
 
 <p align="center">
