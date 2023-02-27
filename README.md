@@ -17,9 +17,13 @@
 
 ## 💻 Sobre
 
+<div>
+<img align="right" width="70px" src="https://user-images.githubusercontent.com/53992405/221703129-f8a0338b-0f11-47e5-a8ae-53fc38c2785c.png">
+
 O PuniBot é um bot de música cross-platform para Discord, com interface limpa e fácil de configurar e executar! Com ele, você pode reproduzir suas músicas favoritas sem precisar sair do Discord.
  
 Contando com um painel completo de controle das musicas, informações, filtros e muitos mais!
+</div>
 
 ___
 
