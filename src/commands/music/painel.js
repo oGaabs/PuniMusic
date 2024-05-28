@@ -39,8 +39,8 @@ class Painel extends Command {
             .setDescription(`**${hyperlink(currentlySong.name.substring(0, 100), songUrl)}** - ${inlineCode(currentlySong.formattedDuration)}`)
             .addFields([
                 {
-                    name: '**Requisitada pelo(a)**',
-                    value: currentlySong.member.toString() || 'Não informado',
+                    name: '**Requested by**',
+                    value: currentlySong.member.toString() || 'N/A',
                     inline: true
                 },
                 {
@@ -54,7 +54,7 @@ class Painel extends Command {
                     inline: true
                 },
                 {
-                    name: 'Autor',
+                    name: 'Author',
                     value: currentlySong.uploader.name,
                     inline: false
                 }
@@ -62,12 +62,12 @@ class Painel extends Command {
             .setThumbnail('https://media1.tenor.com/images/b3b66ace65470cba241193b62366dfee/tenor.gif')
             .setImage(currentlySong.thumbnail)
             .setFooter({
-                text: `Volume: ${configVolume}% | Loop: ${configLoop ? 'Ativado' : 'Desativado'} | Músicas na fila: ${songQuantity}` 
+                text: `Volume: ${configVolume}% | Loop: ${configLoop ? 'ON' : 'OFF'} | Musics in queue: ${songQuantity}` 
             })
 
         const songEmbedController = new EmbedBuilder()
             .setColor(client.colors['default'])
-            .setTitle('Controles de música ⤵')
+            .setTitle('Control - Panel Music ⤵')
             .setImage('https://media1.tenor.com/images/b3b66ace65470cba241193b62366dfee/tenor.gif')
 
         // Uma row que contem o link da musica e ações que podem ser executas
@@ -75,17 +75,17 @@ class Painel extends Command {
         // As ações serão implementadas futuramente
 
         const painelButtons = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('back').setEmoji('⏮️').setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().setCustomId('stop').setEmoji('🛑').setStyle(ButtonStyle.Danger),
-            new ButtonBuilder().setCustomId('skip').setEmoji('⏭️').setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().setCustomId('loop').setEmoji('🔁').setStyle(ButtonStyle.Success),
-            new ButtonBuilder().setLabel('LINK').setEmoji('📀').setStyle(ButtonStyle.Link).setURL(songUrl)
+            new ButtonBuilder().setCustomId('back').setEmoji('⏮️').setLabel('Replay').setStyle(ButtonStyle.Primary),
+            new ButtonBuilder().setCustomId('stop').setEmoji('🛑').setLabel('Stop').setStyle(ButtonStyle.Danger),
+            new ButtonBuilder().setCustomId('skip').setEmoji('⏭️').setLabel('Next').setStyle(ButtonStyle.Primary),
+            new ButtonBuilder().setCustomId('volume').setEmoji('🔊').setLabel('Volume').setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setEmoji('📀').setLabel('LINK').setStyle(ButtonStyle.Link).setURL(songUrl)
         )
         const painelButtons2 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('queue').setEmoji('📋').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('filtro').setEmoji('🎤').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('volume').setEmoji('🔉').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('randomSong').setEmoji('🔀').setStyle(ButtonStyle.Secondary)
+            new ButtonBuilder().setCustomId('queue').setEmoji('📋').setLabel('List').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('filtro').setEmoji('🎤').setLabel('Filters').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('loop').setEmoji('🔁').setLabel('Loop').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('randomSong').setEmoji('🔀').setLabel('Random').setStyle(ButtonStyle.Secondary)
         )
 
         return { embeds: [songEmbedInfo, songEmbedController], components: [painelButtons, painelButtons2] }
