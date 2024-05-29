@@ -30,7 +30,7 @@ class Play extends Command {
             emitAddSongWhenCreatingQueue: true,
             emitAddListWhenCreatingQueue: true,
             directLink: true,
-            searchSongs: 10,
+            // searchSongs: 10,
             plugins: [
                 new DirectLinkPlugin(),
                 new SpotifyPlugin(),
