@@ -7,7 +7,7 @@ const { SpotifyPlugin } = require('@distube/spotify')
 
 const { YtDlpPlugin } = require('@distube/yt-dlp')
 const { DisTube, DirectLinkPlugin, RepeatMode } = require('distube')
-const pathToFfmpeg = require('ffmpeg-static')
+const path = require('path')
 
 class Play extends Command {
     constructor(client) {
@@ -20,11 +20,11 @@ class Play extends Command {
         })
 
         this.painelCommand = client.getCommand('painel')
-
+        
         // Configura o player de musica
         client.player = new DisTube(client, {
             ffmpeg: {
-                path: pathToFfmpeg
+                path: path.join(process.cwd(), 'ffmpeg/bin/ffmpeg.exe')
             },
             leaveOnFinish: true,
             leaveOnStop: true,
@@ -34,7 +34,7 @@ class Play extends Command {
             emitAddSongWhenCreatingQueue: true,
             emitAddListWhenCreatingQueue: true,
             directLink: true,
-            searchSongs: 10,
+            searchSongs: 1,
             plugins: [
                 new DirectLinkPlugin(),
                 new SpotifyPlugin(),
@@ -102,11 +102,13 @@ class Play extends Command {
             queue.stop()
         })
 
-        client.player.on('searchNoResult', () => { /* empty function for now */ })
-        client.player.on('searchResult', () => { /* empty function for now */ })
-        client.player.on('searchCancel', () => { /* empty function for now */ })
-        client.player.on('searchInvalidAnswer', () => { /* empty function for now */ })
-        client.player.on('searchDone', () => { /* empty function for now */ })
+        client.player.on('searchNoResult', (a) => { console.log(a)/* empty function for now */ })
+        client.player.on('searchResult', (a) => {
+            console.log(a)
+        })
+        client.player.on('searchCancel', (a) => {console.log(a)/* empty function for now */ })
+        client.player.on('searchInvalidAnswer', (a) => { console.log(a)/* empty function for now */ })
+        client.player.on('searchDone', (a) => { console.log(a)/* empty function for now */ })
     }
 
     async execute(message, args, client) {
