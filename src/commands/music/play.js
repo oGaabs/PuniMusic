@@ -7,6 +7,7 @@ const { SpotifyPlugin } = require('@distube/spotify')
 
 const { YtDlpPlugin } = require('@distube/yt-dlp')
 const { DisTube, DirectLinkPlugin, RepeatMode } = require('distube')
+const pathToFfmpeg = require('ffmpeg-static')
 
 class Play extends Command {
     constructor(client) {
@@ -22,15 +23,18 @@ class Play extends Command {
 
         // Configura o player de musica
         client.player = new DisTube(client, {
+            ffmpeg: {
+                path: pathToFfmpeg
+            },
             leaveOnFinish: true,
             leaveOnStop: true,
             leaveOnEmpty: true,
-            emptyCooldown: 1000,
+            emptyCooldown: 10000,
             emitNewSongOnly: true,
             emitAddSongWhenCreatingQueue: true,
             emitAddListWhenCreatingQueue: true,
             directLink: true,
-            // searchSongs: 10,
+            searchSongs: 10,
             plugins: [
                 new DirectLinkPlugin(),
                 new SpotifyPlugin(),
@@ -97,6 +101,12 @@ class Play extends Command {
             queue.metadata.textChannel.send({ embeds: [disconnectionEmbed] })
             queue.stop()
         })
+
+        client.player.on('searchNoResult', () => { /* empty function for now */ })
+        client.player.on('searchResult', () => { /* empty function for now */ })
+        client.player.on('searchCancel', () => { /* empty function for now */ })
+        client.player.on('searchInvalidAnswer', () => { /* empty function for now */ })
+        client.player.on('searchDone', () => { /* empty function for now */ })
     }
 
     async execute(message, args, client) {
@@ -110,7 +120,7 @@ class Play extends Command {
         if (!channelPermissions.has(PERMISSIONS.Connect)) return message.reply('Estou sem permissão para conectar ao canal. (CONNECT)')
         if (!channelPermissions.has(PERMISSIONS.Speak)) return message.reply('Estou sem permissão para falar no canal. (SPEAK)')
 
-        client.player.play(voiceChannel, args.join(' '), {
+        await client.player.play(voiceChannel, args.join(' '), {
             textChannel: message.channel,
             member: message.member,
             message,
