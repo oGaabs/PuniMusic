@@ -18,7 +18,7 @@ const client = new PuniBot({
         GatewayIntentBits.MessageContent
     ],
     partials: ['CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION', 'USER'],
-})
+}, { prefix: process.env.PREFIX.toLowerCase()})
 
 
 client.once(Events.ClientReady, async () => {

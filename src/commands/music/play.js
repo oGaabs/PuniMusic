@@ -22,15 +22,15 @@ class Play extends Command {
 
         // Configura o player de musica
         client.player = new DisTube(client, {
-            leaveOnFinish: true,
+            leaveOnFinish: false,
             leaveOnStop: true,
             leaveOnEmpty: true,
-            emptyCooldown: 1000,
+            emptyCooldown: 60000,
             emitNewSongOnly: true,
             emitAddSongWhenCreatingQueue: true,
             emitAddListWhenCreatingQueue: true,
             directLink: true,
-            searchSongs: 10,
+            searchSongs: 1,
             plugins: [
                 new DirectLinkPlugin(),
                 new SpotifyPlugin(),
@@ -97,6 +97,14 @@ class Play extends Command {
             queue.metadata.textChannel.send({ embeds: [disconnectionEmbed] })
             queue.stop()
         })
+
+        client.player.on('searchNoResult', (a) => { console.log(a)/* empty function for now */ })
+        client.player.on('searchResult', (a) => {
+            console.log(a)
+        })
+        client.player.on('searchCancel', (a) => {console.log(a)/* empty function for now */ })
+        client.player.on('searchInvalidAnswer', (a) => { console.log(a)/* empty function for now */ })
+        client.player.on('searchDone', (a) => { console.log(a)/* empty function for now */ })
     }
 
     async execute(message, args, client) {
@@ -110,7 +118,7 @@ class Play extends Command {
         if (!channelPermissions.has(PERMISSIONS.Connect)) return message.reply('Estou sem permissão para conectar ao canal. (CONNECT)')
         if (!channelPermissions.has(PERMISSIONS.Speak)) return message.reply('Estou sem permissão para falar no canal. (SPEAK)')
 
-        client.player.play(voiceChannel, args.join(' '), {
+        await client.player.play(voiceChannel, args.join(' '), {
             textChannel: message.channel,
             member: message.member,
             message,
