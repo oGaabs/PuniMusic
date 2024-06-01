@@ -12,7 +12,7 @@ class PuniBot extends Client {
     constructor(options = {}, configurations = {}) {
         if (!PuniBot.instance) {
             super(options)
-            this.prefix = configurations.prefix || process.env.PREFIX.toLowerCase()
+            this.prefix = configurations.prefix
 
             this.commands = new Collection()
             this.slashCommands = new Collection()

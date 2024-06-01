@@ -1,0 +1,13 @@
+version: "3.8"  # Adjust if necessary
+
+services:
+  punimusic:
+    build: .  # Build the image from the current directory (Dockerfile)
+    ports:
+      - "3000:3000"  # Map the container port (3000) to the host port (3000)
+    # Environment variables will be defined here (replace with actual values or secrets mounting)
+    env_file:
+      path: ./.env
+      required: true 
+    volumes:
+      - ./:/app  # Optional volume to mount your application code (if needed)
