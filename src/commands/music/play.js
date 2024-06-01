@@ -7,7 +7,6 @@ const { SpotifyPlugin } = require('@distube/spotify')
 
 const { YtDlpPlugin } = require('@distube/yt-dlp')
 const { DisTube, DirectLinkPlugin, RepeatMode } = require('distube')
-const ffmpeg = require('@ffmpeg-installer/ffmpeg')
 
 class Play extends Command {
     constructor(client) {
@@ -20,18 +19,13 @@ class Play extends Command {
         })
 
         this.painelCommand = client.getCommand('painel')
-        const ffmpegPath = ffmpeg.path // Adjust based on your structure
 
-        console.log(ffmpegPath)
         // Configura o player de musica
         client.player = new DisTube(client, {
-            ffmpeg: {
-                path: ffmpegPath
-            },
-            leaveOnFinish: true,
+            leaveOnFinish: false,
             leaveOnStop: true,
             leaveOnEmpty: true,
-            emptyCooldown: 10000,
+            emptyCooldown: 60000,
             emitNewSongOnly: true,
             emitAddSongWhenCreatingQueue: true,
             emitAddListWhenCreatingQueue: true,
